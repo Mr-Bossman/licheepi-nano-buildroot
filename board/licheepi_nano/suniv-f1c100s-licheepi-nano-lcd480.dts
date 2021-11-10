@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: (GPL-2.0+ OR X11)
-// based on https://github.com/Lichee-Pi/linux/blob/nano-5.2-flash/arch/arm/boot/dts/suniv-f1c100s-licheepi-nano.dts on 2021-08
 /*
  * Copyright 2018 Icenowy Zheng <icenowy@aosc.io>
  */
@@ -25,18 +24,18 @@
 	};
 
 	panel: panel {
-		compatible = "qiaodian,qd43003c0-40", "simple-panel";
+		compatible = "lg,lb070wv8", "simple-panel";
 		#address-cells = <1>;
 		#size-cells = <0>;
 		enable-gpios = <&pio 4 6 GPIO_ACTIVE_HIGH>;
 		power-supply = <&reg_vcc3v3>;
 
-		port@0 {
+ 		port@0 {
 			reg = <0>;
 			#address-cells = <1>;
 			#size-cells = <0>;
 
-			panel_input: endpoint@0 {
+ 			panel_input: endpoint@0 {
 				reg = <0>;
 				remote-endpoint = <&tcon0_out_lcd>;
 			};
@@ -60,20 +59,20 @@
 };
 
 &i2c0 {
-		pinctrl-0 = <&i2c0_pins>;
-		pinctrl-names = "default";
-		status = "okay";
+    pinctrl-0 = <&i2c0_pins>;
+    pinctrl-names = "default";
+    status = "okay";
 
-		gt911: touchscreen@14 {
-				compatible = "goodix,gt911";
-				reg = <0x14>;
-				interrupt-parent = <&pio>;
-				interrupts = <4 10 IRQ_TYPE_EDGE_FALLING>; /* (PE10) */
-				pinctrl-names = "default";
-				irq-gpios = <&pio 4 10 GPIO_ACTIVE_HIGH>; /* (PE10) */
-				reset-gpios = <&pio 4 9 GPIO_ACTIVE_HIGH>; /* RST (PE9) */
-				/* touchscreen-swapped-x-y */
-		};
+    gt911: touchscreen@14 {
+        compatible = "goodix,gt911";
+        reg = <0x14>;
+        interrupt-parent = <&pio>;
+        interrupts = <4 10 IRQ_TYPE_EDGE_FALLING>; /* (PE10) */
+        pinctrl-names = "default";
+        irq-gpios = <&pio 4 10 GPIO_ACTIVE_HIGH>; /* (PE10) */
+        reset-gpios = <&pio 4 9 GPIO_ACTIVE_HIGH>; /* RST (PE9) */
+        /* touchscreen-swapped-x-y */
+    };
 };
 
 &mmc0 {
@@ -84,10 +83,10 @@
 };
 
 &pio {
-		ts_reset_pin: ts_reset_pin@0 {
-				pins = "PE9";
-				function = "gpio_out";
-		};
+    ts_reset_pin: ts_reset_pin@0 {
+        pins = "PE9";
+        function = "gpio_out";
+    };
 };
 
 &lradc {
@@ -178,8 +177,37 @@
 	};
 };
 
+&mmc0 {
+	vmmc-supply = <&reg_vcc3v3>;
+	bus-width = <4>;
+	broken-cd;
+	status = "okay";
+};
+
 &uart0 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart0_pe_pins>;
+	status = "okay";
+};
+
+&otg_sram {
+	status = "okay";
+};
+
+&usb_otg {
+	dr_mode = "otg";
+	status = "okay";
+};
+
+&usbphy {
+	usb0_id_det-gpio = <&pio 4 2 GPIO_ACTIVE_HIGH>; /* PE2 */
+	status = "okay";
+};
+
+&codec {
+	allwinner,audio-routing =
+		"Headphone", "HP",
+		"Headphone", "HPCOM",
+		"MIC", "Mic";
 	status = "okay";
 };
